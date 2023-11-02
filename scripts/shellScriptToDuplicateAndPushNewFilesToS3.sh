@@ -48,7 +48,7 @@ arg=$1;
 			continue ;
 		fi 
 		fileName=$(basename "$arg");
-		guid=$(echo "$fileName" | sed 's#^.*cpb-aacip.#cpb-aacip-#1;s#[^[:alnum:]-].*##1' );
+		guid=$(echo "$fileName" | sed 's#^.*cpb-aacip.#cpb-aacip-#1;s#.transcript##1;s#[^[:alnum:]-].*##1' );
 		
 				# sanity checks for GUID-ness
 # 		if [ "$(echo "$fileName" | tr -dC '-' | wc -c | tr -dC '[0-9]')" != 4 ] ; then 
