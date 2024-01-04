@@ -22,6 +22,3 @@ class ApiController < ActionController::API
     }
   end
 end
-
-# post list of guids to /ingest
-# ingest htem a la ingest_guids rake

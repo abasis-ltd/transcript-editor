@@ -1,0 +1,71 @@
+<h2>Transcripts Completed</h2>
+
+<div class="nav-tabs">
+  <div id="transcriptsCompletedData-day" class="timeframe" data-timeframe="day">
+    Day
+  </div>
+  <div id="transcriptsCompletedData-week" class="timeframe" data-timeframe="week">
+    Week
+  </div>
+  <div id="transcriptsCompletedData-month" class="timeframe" data-timeframe="month">
+    Month
+  </div>
+  <div id="transcriptsCompletedData-year" class="timeframe" data-timeframe="year">
+    Year
+  </div>
+  <div id="transcriptsCompletedData-all" class="active timeframe" data-timeframe="all">
+    All
+  </div>
+</div>
+
+<table class="dashboard-table">
+  <tr class="dashboard-table-header">
+    <td>Transcript ID</td>
+    <td>Title</td>
+    <td>Completed At</td>
+    <td>Winning Editor</td>
+    <td>Winning Editor Edits</td>
+  </tr>
+
+  <% if(transcriptsCompletedData.transcripts && Object.keys(transcriptsCompletedData.transcripts).length > 0) { %>
+    <% Object.keys(transcriptsCompletedData.transcripts).forEach((guid) => { %>
+      <tr>
+        <td><%= guid %></td>
+        <td class="long"><a href="/transcripts/<%= guid %>"><%= transcriptsCompletedData.transcripts[guid].title %></a></td>
+        <td><%= transcriptsCompletedData.transcripts[guid].completed_at %></td>
+        <td><%= transcriptsCompletedData.transcripts[guid].most_edits_user_email %></td>
+        <td><%= transcriptsCompletedData.transcripts[guid].most_edits_user_count %></td>
+      </tr>
+    <% }) %>
+  <% } else { %>
+    <tr><td>No results for timeframe</td></tr>
+  <% } %>
+</table>
+
+<div class="paging">
+  <div class="prev">
+    <% if(page != 0){ %>
+      <div class="enabled" data-page=0>First</div>
+      <div class="enabled" data-page=<%= page-1 > 0 ? page-1 : 0 %>>Prev</div>
+    <% } else { %>
+      <div class="disabled">First</div>
+      <div class="disabled">Prev</div>
+    <% } %>
+  </div>
+
+  <div class="paging-numbers">
+    <%= (page) * 8 + 1 %> - <%= userData.total < (page+1)*8 ? userData.total : (page+1)*8 %>
+  </div>
+  
+
+  <div class="next">
+    <% if(page+1 <= Math.floor(userData.total/16)){ %>
+      <div class="enabled" data-page=<%= page+1 %>>Next</div>
+      <div class="enabled" data-page=<%= Math.floor(userData.total/16) %>>Last</div>
+    <% } else { %>
+      <div class="disabled">Next</div>
+      <div class="disabled">Last</div>
+    <% } %>
+  </div>
+  
+</div>

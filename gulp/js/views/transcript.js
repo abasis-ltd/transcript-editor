@@ -163,26 +163,35 @@ app.views.Transcript = app.views.Base.extend({
       // Transcript audio already loaded
       if ($(this.player).attr('data-transcript') == ""+this.data.transcript.id) {
         this.onAudioLoad();
+
         return false;
       }
       $(this.player).remove();
     }
 
-    var _this = this,
-      audio_urls = this.data.project.useVendorAudio && this.data.transcript.vendor_audio_urls.length ? this.data.transcript.vendor_audio_urls : [this.data.transcript.audio_url];
-
+    var _this = this
+    // var audio_urls = this.data.project.useVendorAudio && this.data.transcript.vendor_audio_urls.length ? this.data.transcript.vendor_audio_urls : [this.data.transcript.audio_url];
     // build audio string
-    var audio_string = '<audio data-transcript="'+this.data.transcript.id+'" preload>';
-    _.each(audio_urls, function(url){
-      var ext = url.substr(url.lastIndexOf('.') + 1),
-          type = ext;
-      audio_string += '<source src="'+url+'" type="audio/mpeg">';
-    });
-    audio_string += '</audio>';
+    // var audio_string = '<audio data-transcript="'+this.data.transcript.id+'" preload>';
+    // _.each(audio_urls, function(url){
+    //   var ext = url.substr(url.lastIndexOf('.') + 1),
+    //       type = ext;
+    //   audio_string += '<source src="'+url+'" type="audio/mpeg">';
+    // });
+    // audio_string += '</audio>';
 
-    // create audio object
-    var $audio = $(audio_string);
-    this.player = $audio[0];
+
+    // // create audio object
+    // var $audio = $(audio_string);
+    // this.player = $audio[0];
+
+    var video_string = '<video id="video" playbackRate=1.0 type="application/x-mpegURL" data-transcript="' + this.data.transcript.id + '" preload><source src="' + this.data.transcript.audio_url + '"></video>'
+
+    // // create audio object
+    // var $audio = $(audio_string);
+    // this.player = $audio[0];
+    var $video = $(video_string)
+    this.player = $video[0]
 
     // wait for audio to start to load
     this.player.onloadstart = function(){
@@ -223,6 +232,8 @@ app.views.Transcript = app.views.Base.extend({
     this.model.fetch({
       success: function(model, response, options){
         _this.onTranscriptLoad(model);
+        _this.addMinmaxClick()
+
       },
       error: function(model, response, options){
         $(window).trigger('alert', ['Whoops! We seem to have trouble loading this transcript. Please try again by refreshing your browser or come back later!']);
@@ -434,6 +445,8 @@ app.views.Transcript = app.views.Base.extend({
     this.$el.html(this.template(this.data));
     this.renderLines();
     this.loadUserProgress();
+    this.addMinmaxClick()
+    this.addAutoplayClick()
   },
 
   renderLines: function(){

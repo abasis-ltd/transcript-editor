@@ -394,4 +394,117 @@ class Transcript < ActiveRecord::Base
     end
   end
 
+  def self.transcriptsCompleted(start_date=Time.new(2000,1,1), end_date=Time.now, page)
+    transcriptQuery = Transcript.where("percent_completed >= 99").where('updated_at >= ?', start_date).where('updated_at <= ?', end_date)
+
+    data = { total: transcriptQuery.count }
+    
+    transcripts = {}
+    transcriptQuery.offset(page * 8).limit(8).each do |transcript|
+
+      # get all completed ts updated inside time window
+
+      most_edits_user = nil
+      transcript_completed_at = transcript.transcript_lines.order(updated_at: :desc).first.updated_at
+
+      # how does a 99 complete ts have no edits???????????
+      # next unless transcript.transcript_edits.count > 0
+
+      user_edit_counts = {}
+   
+      ts_user_ids = transcript.transcript_edits.select(:user_id).distinct.map(&:user_id)
+      ts_user_ids.delete(0)
+
+      ts_users = User.find( ts_user_ids )
+      ts_users.each do |user|
+        user_edit_counts[user.id] = transcript.transcript_edits.where(user_id: user.id).count
+
+        # dont give win to anon edits 
+        next if user.id == 0
+
+        if !most_edits_user || user_edit_counts[user.id] > user_edit_counts[most_edits_user.id]
+          most_edits_user = user
+        end
+      end
+
+      transcripts[transcript.uid] = {
+        title: transcript.title,
+        completed_at: transcript_completed_at,
+        most_edits_user_email: most_edits_user.email,
+        most_edits_user_count: user_edit_counts[most_edits_user.id]
+      }
+    end
+
+    data[:transcripts] = transcripts
+    data
+  end
+
+  def self.editActivity(start_date=Time.new(2000,1,1), end_date=Time.now, page)
+
+    transcriptQuery = Transcript.where('updated_at >= ?', start_date).where('updated_at <= ?', end_date)
+
+    data = { total: transcriptQuery.count }
+    transcripts = {}
+
+    transcriptQuery.offset(page * 8).limit(8).each do |transcript|
+
+      if transcript.transcript_edits.count > 0
+        lines_query = transcript.transcript_edits.where('created_at >= ?', start_date).where('created_at <= ?', end_date)
+
+        new_edits_count = lines_query.count
+        last_edit_date = lines_query.order(created_at: :desc).first.created_at.to_s
+      else
+        new_edits_count = 0
+        last_edit_date = "N/A"
+      end
+
+      transcripts[transcript.uid] = {
+        title: transcript.title,
+        edit_count: new_edits_count,
+        last_edit_date: last_edit_date
+      }
+    end
+
+    data[:transcripts] = transcripts
+    data
+  end
+
+  def self.transcriptGraphData(start_date=Time.new(2000,1,1), division="month")
+    data = {}
+    data[:data] = []
+    data[:labels] = []
+
+    if division == "month"
+
+      while start_date < Time.now
+        # count of TEs for each month of timeframe
+        data[:data] << TranscriptEdit.where('created_at >= ?', start_date).where('created_at <= ?', start_date + 1.month).count
+
+        data[:labels] << "#{Date::MONTHNAMES[start_date.month]} #{start_date.year}"
+        start_date = start_date + 1.month
+      end
+    end
+
+    data    
+  end
+  def self.userGraphData(start_date=Time.new(2000,1,1), division="month")
+    data = {}
+    data[:data] = []
+    data[:labels] = []
+
+    if division == "month"
+
+      while start_date < Time.now
+        # count of TEs for each month of timeframe
+        
+        data[:data] << TranscriptEdit.where('created_at >= ?', start_date).where('created_at <= ?', start_date + 1.month).select(:user_id).distinct.count
+
+        data[:labels] << "#{Date::MONTHNAMES[start_date.month]} #{start_date.year}"
+          
+        start_date = start_date + 1.month
+      end
+    end
+
+    data
+  end
 end
