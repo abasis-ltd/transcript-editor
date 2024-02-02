@@ -183,6 +183,8 @@ app.routers.DefaultRouter = Backbone.Router.extend({
     }).catch( (error) => {
       console.log( 'Error fetching dash data ', error )
 
+      this.addTimeframesClick()
+      this.addPagingClick()
     })
   },
 
