@@ -1,3 +1,23 @@
+function chartFormat(name, chartData, color){
+  var data = {
+    labels: chartData.labels,
+    datasets: [
+      this.chartDataset(name, chartData.data, color)
+    ]
+  };
+
+  return data
+}
+function chartDataset(title, data, color) {
+  return {
+    label: title,
+    data: data,
+    fill: false,
+    borderColor: color,
+    tension: 0.1
+  }
+}
+
 app.routers.DefaultRouter = Backbone.Router.extend({
 
   routes: {
@@ -42,28 +62,34 @@ app.routers.DefaultRouter = Backbone.Router.extend({
     this._updateReport("editActivityData")
     this._updateReport("collectionData")
 
-    var transcriptActivityData = JSON.parse($.ajax({async: false, method: "GET", url: "/graph_data.json"}).responseText).data
-    var userActivityData = JSON.parse($.ajax({async: false, method: "GET", url: "/user_graph_data.json"}).responseText).data
+    $.ajax({method: "GET", url: "/graph_data.json"}).done(function(response) {
+      var transcriptActivityData = response.data
+      const transcriptChart = new Chart("chart-transcript", {
+        type: "line",
+        data: chartFormat("Total Edits Per Month", transcriptActivityData, "#6fc3e3"),
+        options: {
+          responsive: true,
+          // aspectRatio: 16/9,
+          maintainAspectRatio: false
+        }
+      })
 
-    const transcriptChart = new Chart("chart-transcript", {
-      type: "line",
-      data: this.chartFormat("Total Edits Per Month", transcriptActivityData, "#6fc3e3"),
-      options: {
-        responsive: true,
-        // aspectRatio: 16/9,
-        maintainAspectRatio: false
-      }
+      // delete spinner after we get some chart data
+      document.getElementById("graph-spinner").remove()
     })
-  
-    const userChart = new Chart("chart-user", {
-      type: "line",
-      data: this.chartFormat("Active Users Per Month", userActivityData, "#efa731"),
-      options: {
-        responsive: true,
-        // aspectRatio: 16/9,
-        maintainAspectRatio: false
-      }
-    })  
+
+    $.ajax({method: "GET", url: "/user_graph_data.json"}).done(function(response){
+      var userActivityData = response.data
+      const userChart = new Chart("chart-user", {
+        type: "line",
+        data: chartFormat("Active Users Per Month", userActivityData, "#efa731"),
+        options: {
+          responsive: true,
+          // aspectRatio: 16/9,
+          maintainAspectRatio: false
+        }
+      })
+    })
 
     // use *this* this as this in this v
     this.addTimeframesClick = this.addTimeframesClick.bind(this)
@@ -73,42 +99,16 @@ app.routers.DefaultRouter = Backbone.Router.extend({
     this.addGraphsClick()
   },
 
-  chartFormat: function(name, chartData, color){
-    var data = {
-      labels: chartData.labels,
-      datasets: [
-        this.chartDataset(name, chartData.data, color)
-      ]
-    };
-
-    return data
-  },
-
-  chartDataset: function(title, data, color) {
-    return {
-      label: title,
-      data: data,
-      fill: false,
-      borderColor: color,
-      tension: 0.1
-    }
-  },
-
   addTimeframesClick: function(){
+
     var dis = this
-    $("div.timeframe").click(function(e){
+    $("div.timeframe").off().click(function(e){
       
       var selectedTimeframe = $(this).attr("data-timeframe")
       // which report are we re-running
+
       var selectedReport = $(this).parent().parent().attr("id")
       dis._updateReport(selectedReport, selectedTimeframe)
-
-      // old elements disappear, so need to reattach click event
-      $("#" + selectedReport + " div.timeframe").removeClass("active")
-      $("#" + e.target.id).addClass("active")
-
-      dis.addTimeframesClick()
-      dis.addPagingClick()
     })
 
   },
@@ -123,12 +123,11 @@ app.routers.DefaultRouter = Backbone.Router.extend({
       $("div.chart-container").addClass("hidden")
       $("#" + e.target.id.replace("-tab", "") + "-container").removeClass("hidden")
     })
-
   },
 
   addPagingClick: function(){
     var dis = this
-    $("div.paging div div.enabled").click(function(e){
+    $("div.paging div div.enabled").off().click(function(e){
       
       var selectedPage = parseInt($(this).attr("data-page"))
       // which report are we re-running
@@ -147,32 +146,44 @@ app.routers.DefaultRouter = Backbone.Router.extend({
     })
   },
 
-  _updateReport: function(reportName, timeframe="all", page=0){
-    // makes userData => UserData
-    var reportPartialClass = reportName.charAt(0).toUpperCase() + reportName.slice(1)
-
-      // get data from API, render partial, add  partial element
-    var data = {}
-    data[reportName] = this._pullReport(reportName, timeframe, page)
-    data["page"] = page
-    var reportPartial = new app.views[reportPartialClass](data)
-    document.getElementById(reportName).innerHTML = reportPartial.$el[0].innerHTML
-  },
-
-  _pullReport: function(reportName, timeframe, page){
-    timeframe = "?timeframe=" + timeframe
+  _updateReport: async function(reportName, timeframe="all", page=0){
+    var urlTimeframe = "?timeframe=" + timeframe
     var pageQuery = "&page=" + page
 
+    var endpoint
     if(reportName == "userData"){
-      return JSON.parse($.ajax({async: false, method: "GET", url: "/user_data.json" + timeframe + pageQuery}).responseText).data
+      endpoint = "/user_data.json"
     } else if(reportName == "transcriptsCompletedData"){
-      return JSON.parse($.ajax({async: false, method: "GET", url: "/transcripts_completed_data.json" + timeframe + pageQuery}).responseText).data
-
+      endpoint = "/transcripts_completed_data.json"
     } else if(reportName == "editActivityData"){
-      return JSON.parse($.ajax({async: false, method: "GET", url: "/edit_activity_data.json" + timeframe + pageQuery}).responseText).data
+      endpoint = "/edit_activity_data.json"
     } else if(reportName == "collectionData"){
-      return JSON.parse($.ajax({async: false, method: "GET", url: "/collection_data.json" + timeframe + pageQuery}).responseText).data
+      endpoint = "/collection_data.json"
     }
+
+    fetch(endpoint + urlTimeframe + pageQuery, {method: "GET"}).then( (response) => response.json()).then((response) => {
+      var reportData = response.data
+
+      var data = {}
+      data[reportName] = reportData
+      data["page"] = page
+  
+      // makes userData => UserData
+      var reportPartialClass = reportName.charAt(0).toUpperCase() + reportName.slice(1)
+      console.log( `now Im getting ${reportPartialClass}` )
+      var reportPartial = new app.views[reportPartialClass](data)
+      document.getElementById(reportName).innerHTML = reportPartial.$el[0].innerHTML
+
+      $("#" + reportName + " div.timeframe").removeClass("active")
+      $("#" + reportName + "-" + timeframe).addClass("active")
+
+      // readd click listeners
+      this.addTimeframesClick()
+      this.addPagingClick()
+    }).catch( (error) => {
+      console.log( 'Error fetching dash data ', error )
+
+    })
   },
 
   _getData: function(data){
@@ -215,5 +226,4 @@ app.routers.DefaultRouter = Backbone.Router.extend({
       params : params
     };
   }
-
 });
