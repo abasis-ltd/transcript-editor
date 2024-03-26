@@ -1,10 +1,8 @@
-# Open Transcript Editor
+# FIXIT+ Transcript Editor
 
-**Notice: The original source of this codebase is relatively stable but doesn't seem to be in active development. This forked version has been customized for the needs of the WGBH Media Library and Archives and the README will document our specific processes for getting the editor up and running.**
+This is an open-source, self-hosted, web-based tool for correcting transcripts that were automatically generated using speech-to-text software. It was originally developed by [NYPL Labs](http://www.nypl.org/collections/labs) in partnership with [The Moth](http://themoth.org/) and [Pop Up Archive](https://popuparchive.com/) with generous support from the [Knight Foundation](http://www.knightfoundation.org/grants/201551666/).
 
-**Notice: Pop Up Archive (PUA) shut down operations and ended support on 11/28/17. This README has removed all references to PUA as that functionality will no longer function. If needed please visit the [original repo](https://github.com/NYPL/transcript-editor).**
-
-This is an open-source, self-hosted, web-based tool for correcting transcripts that were automatically generated using speech-to-text software. It was developed by [NYPL Labs](http://www.nypl.org/collections/labs) in partnership with [The Moth](http://themoth.org/) and [Pop Up Archive](https://popuparchive.com/) with generous support from the [Knight Foundation](http://www.knightfoundation.org/grants/201551666/).
+Since 2018, GBH Archives has adopted and extended this project to provide a crowdsourced transcript correction platform for GBH and for the public media community at large.
 
 ## TOC
 
