@@ -4,6 +4,8 @@ This is an open-source, self-hosted, web-based tool for correcting transcripts t
 
 Since 2018, GBH Archives has adopted and extended this project to provide a crowdsourced transcript correction platform for GBH and for the public media community at large.
 
+If you would like to help improve access to public media audiovisual materials, please correct some transcripts on our public FIXIT+ site! ( https://fixitplus.americanarchive.org/ )
+
 ## TOC
 
 1. [Setting up the editor](#setting-up-the-editor)
