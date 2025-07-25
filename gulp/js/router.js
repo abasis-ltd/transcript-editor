@@ -1,7 +1,7 @@
 app.routers.DefaultRouter = Backbone.Router.extend({
 
   routes: {
-    "":                             "index",
+    "page/:id":                             "index",
     "?*queryString":                "index",
     "transcripts/:id":              "transcriptEdit",
     "transcripts/:id?*queryString": "transcriptEdit",

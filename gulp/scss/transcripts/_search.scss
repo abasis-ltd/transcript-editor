@@ -16,8 +16,9 @@ $search-item-size: 100px;
     float: left;
     width: $search-item-size;
     height: $search-item-size;
-    background: center no-repeat;
-    background-size: cover;
+    // background: center no-repeat;
+    // background-size: cover;
+    background-image: url(https://h8k56.github.io/Cypriot_Audio_Files/OIP-427564143.jpeg);
   }
 
   .item-details {

@@ -30,7 +30,8 @@
   z-index: 1000;
   width: 20vw;
   overflow: hidden;
-  background-color: #222;
+  background-image: url(https://h8k56.github.io/Cypriot_Audio_Files/OIP-427564143.jpeg);
+  //background-color: #222;
 }
 
 #video-player video {
@@ -38,6 +39,7 @@
   width: 100%;
   opacity: 1;
   transition: opacity 0.4s  ;
+  background-image: url(https://h8k56.github.io/Cypriot_Audio_Files/OIP-427564143.jpeg);
 }
 
 #video-player.pip {
@@ -49,6 +51,7 @@
   bottom: 50px;
   right: 4vw;
   max-width: 16vw;
+  background-image: url(https://h8k56.github.io/Cypriot_Audio_Files/OIP-427564143.jpeg);
 }
 
 

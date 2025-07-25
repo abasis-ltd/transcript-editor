@@ -1,64 +1,72 @@
-<!doctype html>
-<html class="no-js" lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>FIX IT +</title>
-    <meta name="description" content="A web app for transcripts that were automatically generated from speech-to-text software">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html lang="en">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>
+    CY AUDIO | Let's Give Cyprus a Voice
+  </title>
+  <meta name="description" content="">
 
-    <link rel="stylesheet" href="/assets/css/app.min.css?v=1706906741557">
-    <link rel="stylesheet" href="/fix_it_plus/assets/css/styles.css?v=1706906741557">
-    <link rel="shortcut icon" href="/fix_it_plus/assets/img/favicon.ico?v=1706906741557">
-  </head>
-  <body>
+  <!-- Link to the merged stylesheet -->
+  <link rel="stylesheet" href="/fixit-cy/assets/css/styles.css">
+</head>
 
-    <div id="app" class="container">
+<body>
 
-      <div id="header" class="header">
-        <nav id="primary-navigation" class="navigation primary inverse" role="navigation">
-          <div>
-            <div id="header-title" class="title-container"></div>
-            <div id="header-crumbs" class="crumbs-container"></div>
-            <div id="account-container" class="account-container"></div>
-            <div id="primary-menu-container" class="menu-container"></div>
-          </div>
-        </nav>
-        <nav id="secondary-navigation" class="navigation secondary"></nav>
-        <div id="primary-alert" class="alert" role="alert" aria-atomic="true"></div>
+  <!-- The .container class is now on the main app div -->
+  <div class="container">
+
+    <!-- Use <header> tag and apply .site-header class -->
+    <header class="site-header">
+      <!-- Add .logo class to the title container -->
+      <div id="header-title" class="title-container logo">
+      <a href="/" class="site-logo" style="display:inline-block;vertical-align:middle;text-decoration:none;">
+          <span style="margin-left:12px;vertical-align:middle;">CY AUDIO | Let's Give Cyprus a Voice</span>
+        </a>
       </div>
+      <!-- Add .nav-links class to the menu container -->
+      <div id="primary-menu-container" class="menu-container nav-links"></div>
+    </header>
 
-      <div id="main" class="body"></div>
 
-      <div id="footer" class="footer">
-        <nav id="footer-navigation" class="navigation inverse">
-          <div id="footer-menu-container" class="menu-container"></div>
-        </nav>
-      </div>
+    <div id="main" class="body">
 
     </div>
 
-    <!-- json payload -->
-    <script src="/fix_it_plus/project.js?v=1706906741557"></script>
-    <!-- all templates -->
-    <script src="/assets/js/templates.js?v=1706906741557"></script>
-    <!-- minified bundle of assets from default.js file -->
-    <script src="/assets/js/default.min.js?v=1706906741557"></script>
-    <!-- custom js -->
-    <script src="/fix_it_plus/assets/js/custom.js?v=1706906741557"></script>
-    
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <!-- Use <footer> tag and apply .site-footer class -->
+    <footer class="site-footer">
+      <!-- Add .footer-links class to the menu container -->
+      <div id="footer-menu-container" class="menu-container footer-links"></div>
+      <p style="margin-top: 20px;">Powered by <a href="https://www.abasis.ai/" target="_blank">Abasis Limited</a></p>
+      <p style="margin-top: 20px;">&copy; 2025 Let's Give Cyprus a Voice. All Rights Reserved.</p>
+    </footer>
 
-      ga('create', 'UA-60323667-4', 'auto');
-      ga('send', 'pageview');
+  </div>
 
-    </script>
-    
-  </body>
+  <!-- json payload -->
+  <script src="/fixit-cy/project.js?v=1"></script>
+  <!-- all templates -->
+  <script src="/assets/js/templates.js?v=1"></script>
+
+  <script>
+    // The platform's JavaScript is looking for an element with the class '.autoplay-button'.
+    // If it doesn't exist, we create a dummy, hidden one to prevent the error.
+    if (!document.getElementById('autoplay')) {
+        var dummyButton = document.createElement('button');
+        dummyButton.id = 'autoplay'; // Use the correct ID
+        //dummyButton.style.display = 'none'; // Make it invisible
+        document.body.appendChild(dummyButton);
+      }
+  </script>
+  <!-- minified bundle of assets from default.js file -->
+  <script src="/assets/js/default.min.js?v=1"></script>
+  <!-- custom js -->
+  <script src="/fixit-cy/assets/js/custom.js?v=1"></script>
+
+  
+</body>
+
 </html>

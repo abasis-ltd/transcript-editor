@@ -34,7 +34,7 @@ module TranscriptConverter
       end
 
       def reformatted_content
-        @reformatted_content ||= content["parts"].map do |chunk|
+        @reformatted_content ||= content["phrases"].map do |chunk|
           start_time = convert_seconds(chunk["start_time"])
           end_time = convert_seconds(chunk["end_time"])
           text = chunk["text"]

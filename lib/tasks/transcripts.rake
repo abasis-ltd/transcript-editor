@@ -250,9 +250,12 @@ namespace :transcripts do
 
   def get_transcripts_from_file(file_path)
     csv_body = File.read(file_path)
-    csv = CSV.new(csv_body, :headers => true, :header_converters => :symbol, :converters => [:all])
-    csv.to_a.map {|row| row.to_hash }
-  end
+    csv = CSV.new(csv_body, headers: true, header_converters: :symbol, converters: [:all])
+    csv.to_a.map do |row|
+      row.to_hash.reject { |k, _| k.nil? || k.to_s.strip.empty? }
+    end
+end
+
 
   def update_transcripts_to_file(file_path, transcripts)
     CSV.open(file_path, "wb") do |csv|

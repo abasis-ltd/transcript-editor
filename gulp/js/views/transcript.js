@@ -156,42 +156,66 @@ app.views.Transcript = app.views.Base.extend({
     });
   },
 
-  loadAudio: function(){
+loadAudio: function(){
     // Player already loaded
     if (this.player) {
-
       // Transcript audio already loaded
       if ($(this.player).attr('data-transcript') == ""+this.data.transcript.id) {
         this.onAudioLoad();
-
         return false;
       }
-      $(this.player).remove();
+      $(this.player).remove(); // Remove old player if transcript ID doesn't match
     }
 
-    var _this = this
-    // var audio_urls = this.data.project.useVendorAudio && this.data.transcript.vendor_audio_urls.length ? this.data.transcript.vendor_audio_urls : [this.data.transcript.audio_url];
-    // build audio string
-    // var audio_string = '<audio data-transcript="'+this.data.transcript.id+'" preload>';
-    // _.each(audio_urls, function(url){
-    //   var ext = url.substr(url.lastIndexOf('.') + 1),
-    //       type = ext;
-    //   audio_string += '<source src="'+url+'" type="audio/mpeg">';
-    // });
-    // audio_string += '</audio>';
+    var _this = this;
+    var audio_urls = [this.data.transcript.audio_url]; // Assuming audio_url is always an array or single string
+
+    // --- NEW: Image Thumbnail Element ---
+    var imageUrl = this.data.transcript.image_url;
+    var imageElementHtml = '';
+
+    if (imageUrl) {
+      imageElementHtml = '<img src="' + imageUrl + '" alt="Transcript thumbnail" class="player-thumbnail">';
+    } else {
+      // Fallback image if no specific image_url is provided
+      imageElementHtml = '<img src="/assets/img/default-audio-thumbnail.jpeg" alt="Default audio thumbnail" class="player-thumbnail default-thumbnail">';
+    }
+    // --- END NEW: Image Thumbnail Element ---
 
 
-    // // create audio object
-    // var $audio = $(audio_string);
-    // this.player = $audio[0];
+    // --- MODIFIED: Build Audio String with <audio> tag ---
+    var audio_string = '<audio id="audio-player" data-transcript="' + this.data.transcript.id + '" preload controls>'; // Added 'controls' for default browser controls
+    _.each(audio_urls, function(url){
+      var ext = url.substr(url.lastIndexOf('.') + 1);
+      var mimeType = 'audio/mpeg'; // Default to mpeg, adjust if you have other audio types (e.g., 'audio/wav', 'audio/ogg')
+      if (ext === 'mp3') {
+        mimeType = 'audio/mpeg';
+      } else if (ext === 'wav') {
+        mimeType = 'audio/wav';
+      } else if (ext === 'ogg') {
+        mimeType = 'audio/ogg';
+      }
+      audio_string += '<source src="'+url+'" type="'+ mimeType +'">';
+    });
+    audio_string += '</audio>';
+    // --- END MODIFIED: Build Audio String ---
 
-    var video_string = '<video id="video" playbackRate=1.0 type="application/x-mpegURL" data-transcript="' + this.data.transcript.id + '" preload><source src="' + this.data.transcript.audio_url + '"></video>'
+    // --- NEW: Combine Image and Audio Player in a wrapper ---
+    var playerWrapperHtml = '<div class="audio-player-wrapper">' +
+                            imageElementHtml +
+                            audio_string +
+                            '</div>';
+    // --- END NEW: Combine ---
 
-    // // create audio object
-    // var $audio = $(audio_string);
-    // this.player = $audio[0];
-    var $video = $(video_string)
-    this.player = $video[0]
+    // Append the combined player HTML to the main player container in your view's template
+    // This assumes you have a div in your template like <div class="player-container"></div>
+    // or you are directly replacing the content of a specific element in your view's EL.
+    // You'll need to adjust 'this.$('.player-container')' to target the correct element in your HTML.
+    this.$('.player-container').html(playerWrapperHtml); // Assuming you have a .player-container div in your view's template
+
+
+    // Get the actual audio element from the newly rendered HTML
+    this.player = this.$('#audio-player')[0]; // Get the DOM element of the audio player
 
     // wait for audio to start to load
     this.player.onloadstart = function(){
@@ -200,14 +224,6 @@ app.views.Transcript = app.views.Base.extend({
         _this.onAudioLoad();
       }
     };
-
-    // wait for it to load
-    // this.player.oncanplay = function(){
-    //   if (!_this.player_loaded) {
-    //     _this.player_loaded = true;
-    //     _this.onAudioLoad();
-    //   }
-    // };
 
     // check for time update
     this.player.ontimeupdate = function() {
@@ -220,6 +236,9 @@ app.views.Transcript = app.views.Base.extend({
       _this.playerState('buffering');
     };
 
+    // Optional: If you have custom play/pause buttons, you might need to re-bind them
+    // after the player HTML is re-rendered.
+    // Example: this.$('.play-button').off('click').on('click', function() { _this.audioPlay(); });
   },
 
   loadListeners: function(){ /* override me */ },

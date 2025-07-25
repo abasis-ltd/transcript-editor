@@ -1,30 +1,43 @@
-<div class="item-image" style="background-image: url(<%= image_url %>)">
+<% /* This template is rendered by app.views.TranscriptItem */ %>
+<% /* The root element of the view is already an <a> tag with href set to transcript.path */ %>
+
+<div class="item-image-wrapper"> <% /* New wrapper for the image */ %>
+  <% if (image_url) { %> <% /* Check if image_url exists from backend */ %>
+    <img src="<%= image_url %>" alt="<%= title %> thumbnail" class="item-image-actual">
+  <% } else { %>
+    <% /* Fallback image if no specific image_url is provided */ %>
+    <img src="/assets/img/default-transcript-placeholder.jpeg" alt="Default thumbnail" class="item-image-actual default-image">
+  <% } %>
+
   <% if (percent_completed == 100) { %>
     <div class="completed-small-box">
-
       <div class="completed-check-container">
         <div class="completed-check check-small"></div>
         <div class="completed-check-tag-text">Completed</div>
       </div>
     </div>
-    
   <% } %>
 </div>
-<% if (collection_title) { %>
-  <div class="item-subtitle"><%= collection_title %></div>
-<% } %>
-<div class="item-title"><%= title %></div>
-<% if (description) { %>
-  <div class="item-description"><%= description %></div>
-<% } %>
-<div class="item-info">
-  <%= UTIL.formatTimeAlt(duration) %>
-  <% if (users_contributed > 0) { %>
-    <div class="item-contributors">
-      <%= UTIL.formatNumberTiny(users_contributed,0) %> contributor<%= users_contributed == 1 ? '' : 's' %>
-    </div>
+
+<div class="card-content"> <% /* Wrap existing content in a div for better structure */ %>
+  <% if (collection_title) { %>
+    <div class="item-subtitle"><%= collection_title %></div>
   <% } %>
+  <div class="item-title"><%= title %></div> <% /* Title remains clickable via parent <a> */ %>
+  <% if (description) { %>
+    <div class="item-description"><%= description %></div>
+  <% } %>
+  <div class="item-info">
+    <%= UTIL.formatTimeAlt(duration) %>
+    <% if (users_contributed > 0) { %>
+      <div class="item-contributors">
+        <%= UTIL.formatNumberTiny(users_contributed,0) %> contributor<%= users_contributed == 1 ? '' : 's' %>
+      </div>
+    <% } %>
+  </div>
 </div>
+
+<% /* Progress bars and status key are outside card-content, but still within the main <a> tag */ %>
 <% if (percent_edited > 0) { %>
 <div class="item-status">
   <div class="item-status-bar edited" style="width: <%= percent_edited %>%"></div>
@@ -45,6 +58,5 @@
   <% if ((percent_edited-percent_reviewing-percent_completed) > 0) { %>
     <div class="item-status-text edited"><%= percent_edited - percent_reviewing - percent_completed %>% have edits</div>
   <% } %>
-
 </div>
 <% } %>

@@ -1,0 +1,114 @@
+/* === Base === */
+body {
+  font-family: 'Noto Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f9f9f9;
+  color: #333;
+}
+
+.container {
+  max-width: 1400px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+/* === Header === */
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  background: #14387f;
+  color: white;
+}
+
+.site-header .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.nav-links a {
+  margin-left: 20px;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+/* === Hero === */
+.hero {
+  text-align: center;
+  background: linear-gradient(to right, #14387f, #4098d7);
+  color: white;
+  padding: 80px 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.hero h1 {
+  font-size: 2.8em;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+.cta-button {
+  display: inline-block;
+  background: white;
+  color: #14387f;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.cta-button:hover {
+  background: #e6e6e6;
+}
+
+/* === Mission Section === */
+.mission {
+  padding: 40px 0;
+  background: white;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.mission h2 {
+  font-size: 2em;
+  margin-bottom: 15px;
+}
+
+.mission ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.mission ul li {
+  margin: 10px 0;
+}
+
+/* === Footer === */
+.site-footer {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 0.9em;
+  color: #888;
+}
+
+.site-footer .footer-links a {
+  margin: 0 10px;
+  color: #888;
+  text-decoration: none;
+}
+
+.site-footer .footer-links a:hover {
+  text-decoration: underline;
+}
