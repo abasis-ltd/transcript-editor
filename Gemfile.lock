@@ -212,6 +212,8 @@ GEM
     pry (0.15.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    puma (6.6.0)
+      nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.17)
     rack-cors (2.0.2)
@@ -324,6 +326,7 @@ DEPENDENCIES
   pg (~> 1.5)
   pg_search
   pry
+  puma
   rack-cors
   rails (~> 6.1.7)
   rails_12factor

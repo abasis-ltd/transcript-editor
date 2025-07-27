@@ -5,6 +5,7 @@ ruby '3.3.0'
 # Core Rails and DB
 gem 'rails', '~> 6.1.7'
 gem 'pg', '~> 1.5'
+gem 'puma'
 
 # API essentials
 gem 'jbuilder', '~> 2.0'
