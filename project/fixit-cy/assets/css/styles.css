@@ -155,9 +155,7 @@ section h2 {
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    min-width: 320px;
-    max-width: 400px;
-    width: 100%;
+    flex: 1 1 320px;
 }
 
 .team-member-card:hover {
