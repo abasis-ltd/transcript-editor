@@ -28,6 +28,7 @@
 /config/application.*.yml
 /config/ci.yml
 !/config/application.sample.yml
+*.env
 
 # Ignore downloaded transcripts/audio
 /project/*/transcripts/*/*.json

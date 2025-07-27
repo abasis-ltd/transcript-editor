@@ -53,3 +53,5 @@ gem 'sony_ci_api', git: 'https://github.com/WGBH-MLA/sony_ci_api_rewrite.git', b
 
 # Tasks
 gem 'rake', '13.1.0'
+
+gem 'dotenv-rails'
