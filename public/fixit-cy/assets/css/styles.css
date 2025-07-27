@@ -150,14 +150,14 @@ section h2 {
 }
 
 .team-member-card {
-  background-color: #F8F9FA;
-  padding: 30px 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  min-width: 320px;
-  max-width: 400px;
-  width: 100%;
+    background-color: #F8F9FA;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 320px;
+    max-width: 400px;
+    width: 100%;
 }
 
 .team-member-card:hover {
