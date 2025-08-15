@@ -84,6 +84,22 @@
   <% } %>
 </div>
 
+<!-- Add the transcript toolbar inline -->
+<div class="transcript-toolbar inverse" role="toolbar">
+  <div class="controls" role="menu">
+    <div class="control" aria-label="Playback Speed" title="Radio buttons to control the playback speed" style="width: 20%" role="menuitem">
+      <div class="label" data-label="Autoplay" aria-label="Autoplay"></div>
+      <button id="autoplay" class="autoplay-button" type="button">off</button>
+
+      <div class="label" data-label="Speed" aria-label="Speed"></div>
+      <button id="speed1" class="playback-rate-button" data-playback-rate="0.5">½</button>
+      <button id="speed0" class="playback-rate-button" data-playback-rate="1">1</button>
+      <button id="speed2" class="playback-rate-button highlight"  data-playback-rate="1.25">1¼</button>
+      <button id="speed3" class="playback-rate-button" data-playback-rate="1.5">1½</button>
+    </div>
+  </div>
+</div>
+
 <div role="main">
 
   <% if (page_content) { %>

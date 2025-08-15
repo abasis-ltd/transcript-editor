@@ -3,7 +3,7 @@ module TranscriptConverter
     attr_reader :path
 
     def initialize(path)
-      raise 'TranscriptFile requires a valid path to create' unless File.exists?(path.to_s)
+      raise 'TranscriptFile requires a valid path to create' unless File.exist?(path.to_s)
       @path = path
     end
 
