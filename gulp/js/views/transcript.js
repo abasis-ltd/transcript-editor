@@ -407,17 +407,24 @@ app.views.Transcript = app.views.Base.extend({
     }
   },
 
-  playerPlay: function(ms){
-
-    // set time if passed
+playerPlay: function(ms) { // This function now accepts milliseconds
+    // Convert milliseconds to seconds for the HTML5 audio player.
     if (ms !== undefined) {
-      this.player.currentTime = ms * 0.001;
+      this.player.currentTime = ms / 1000;
     }
 
-    if (!this.player.playing) {
-      this.player.play();
+    var playPromise = this.player.play();
+
+    if (playPromise !== undefined) {
+      playPromise.then(_ => {
+        this.playerState('playing');
+        this.message('Playing...');
+      }).catch(error => {
+        console.error("Audio playback was prevented:", error);
+        this.playerPause();
+      });
     }
-  },
+},
 
   playerState: function(state) {
     if (this.state==state) return false;

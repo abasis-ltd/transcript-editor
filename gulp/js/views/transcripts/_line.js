@@ -11,7 +11,7 @@ app.views.TranscriptLine = app.views.Base.extend({
     "click .speaker-option": "selectSpeaker"
   },
 
-  initialize: function(data){
+  initialize: function (data) {
     this.data = _.extend({}, data);
     this.line = this.data.line || {};
     this.edits = this.data.edits || [];
@@ -22,7 +22,7 @@ app.views.TranscriptLine = app.views.Base.extend({
     this.render();
   },
 
-  flag: function(e){
+  flag: function (e) {
     if (e) {
       e.preventDefault();
       $(e.currentTarget).addClass('active');
@@ -34,7 +34,7 @@ app.views.TranscriptLine = app.views.Base.extend({
     if (!this.flagsLoaded) {
       this.flagsLoaded = true;
 
-      this.loadFlags(function(){
+      this.loadFlags(function () {
         _this.flag();
       });
       return false;
@@ -49,9 +49,9 @@ app.views.TranscriptLine = app.views.Base.extend({
 
   },
 
-  loadEdits: function(onSuccess){
+  loadEdits: function (onSuccess) {
     var _this = this;
-    $.getJSON(API_URL + "/transcript_edits.json", {transcript_line_id: this.line.id}, function(data) {
+    $.getJSON(API_URL + "/transcript_edits.json", { transcript_line_id: this.line.id }, function (data) {
       if (data.edits && data.edits.length) {
         _this.edits = _this.parseEdits(data.edits);
         onSuccess && onSuccess();
@@ -59,20 +59,20 @@ app.views.TranscriptLine = app.views.Base.extend({
     });
   },
 
-  loadFlags: function(onSuccess){
+  loadFlags: function (onSuccess) {
     var _this = this;
-    $.getJSON(API_URL + "/flags.json", {transcript_line_id: this.line.id}, function(data) {
+    $.getJSON(API_URL + "/flags.json", { transcript_line_id: this.line.id }, function (data) {
       _this.flags = data.flags || [];
       onSuccess && onSuccess();
     });
   },
 
-  parseEdits: function(_edits){
+  parseEdits: function (_edits) {
     var line = this.line,
-        edits = [],
-        texts = [];
+      edits = [],
+      texts = [];
 
-    _.each(_edits, function(edit, i){
+    _.each(_edits, function (edit, i) {
       if (!_.contains(texts, edit.text)) {
         if (line.user_text == edit.text) {
           edit.active = true;
@@ -85,21 +85,64 @@ app.views.TranscriptLine = app.views.Base.extend({
     return edits;
   },
 
-  render: function(){
-    this.$el.html(this.template(_.extend({},this.line,{speakers: this.speakers})));
+  render: function () {
+    var line = this.line || {};
+  
+    // safe formatter
+    var formatTime = function (ms) {
+      if (ms == null) return '0:00';
+      var totalSeconds = Math.floor(ms / 1000);
+      var minutes = Math.floor(totalSeconds / 60);
+      var seconds = totalSeconds % 60;
+      return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+    };
+  
+    // derive speaker info the template expects
+    var speaker = _.findWhere(this.speakers, { id: line.speaker_id }) || {};
+    var speaker_pos = _.pluck(this.speakers, 'id').indexOf(line.speaker_id);
+  
+    // build the exact context your EJS uses (top-level keys)
+    var ctx = _.extend(
+      {
+        // make sequence available at top-level
+        sequence: (typeof line.sequence !== 'undefined' ? line.sequence : 0),
+  
+        // things your template references
+        has_speakers: !!(this.speakers && this.speakers.length),
+        speaker: speaker,
+        speaker_pos: speaker_pos
+      },
+      line, // flatten all line fields to top-level (status, text, etc., if present)
+      {
+        speakers: this.speakers,
+        transcript_id: this.data.transcript_id, // FIX: was this.transcript_id (undefined)
+        flag_types: this.flag_types
+      }
+    );
+  
+    ctx.start_time_formatted = formatTime(ctx.start_time);
+  
+    this.$el.html(this.template(ctx));
+  
+    // Keep existing attr to not break other code; add data-* for sanity
+    this.$el.attr('sequence', ctx.sequence);
+    this.$el.attr('data-sequence', ctx.sequence);
+  
+    return this;
   },
+  
 
-  resolve: function(e){
+  resolve: function (e) {
     if (e) {
       e.preventDefault();
       $(e.currentTarget).addClass('active');
     }
 
-    $.post(API_URL + "/transcript_lines/"+this.line.id+"/resolve.json");
+    $.post(API_URL + "/transcript_lines/" + this.line.id + "/resolve.json");
     this.$('.button.flag').removeClass('active');
   },
 
-  select: function(e){
+  select: function (e) {
     e && e.preventDefault();
     PubSub.publish('transcript.line.select', this.line);
 
@@ -110,12 +153,12 @@ app.views.TranscriptLine = app.views.Base.extend({
 
   },
 
-  selectSpeaker: function(e){
+  selectSpeaker: function (e) {
     e.preventDefault();
 
     var $option = $(e.currentTarget),
-        speaker_id = parseInt($option.attr('data-id')),
-        old_speaker_id = this.line.speaker_id;
+      speaker_id = parseInt($option.attr('data-id')),
+      old_speaker_id = this.line.speaker_id;
 
     this.$('.speaker-option').removeClass('selected').attr('aria-checked', 'false');
     this.$('.speaker').removeClass('selected c0 c1 c2 c3 c4 c5 c6 c7');
@@ -124,35 +167,35 @@ app.views.TranscriptLine = app.views.Base.extend({
     if (speaker_id == old_speaker_id) {
       this.line.speaker_id = 0;
 
-    // new speaker selection
+      // new speaker selection
     } else {
       var position = _.pluck(this.speakers, 'id').indexOf(speaker_id);
       this.line.speaker_id = speaker_id;
       $option.addClass('selected').attr('aria-checked', 'true');
-      this.$('.speaker').addClass('selected c'+position);
+      this.$('.speaker').addClass('selected c' + position);
     }
 
-    var data = {transcript_id: this.data.transcript_id, transcript_line_id: this.line.id, speaker_id: this.line.speaker_id};
+    var data = { transcript_id: this.data.transcript_id, transcript_line_id: this.line.id, speaker_id: this.line.speaker_id };
 
     // save speaker
-    $.post(API_URL + "/transcript_speaker_edits.json", {transcript_speaker_edit: data}, function(resp) {
+    $.post(API_URL + "/transcript_speaker_edits.json", { transcript_speaker_edit: data }, function (resp) {
       // console.log('Changes saved.')
     });
   },
 
-  star: function(e){
+  star: function (e) {
     e.preventDefault();
     $(e.currentTarget).toggleClass('active');
   },
 
-  verify: function(e){
+  verify: function (e) {
     e && e.preventDefault();
     this.select();
 
     var _this = this;
 
     if (!this.edits.length) {
-      this.loadEdits(function(){
+      this.loadEdits(function () {
         _this.verify();
       });
       return false;

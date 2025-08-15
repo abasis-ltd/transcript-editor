@@ -10,18 +10,17 @@ const {
 
 const uglify = require('gulp-uglify');
 const rename = require('gulp-rename');
-const sass = require('gulp-sass');
-// const autoprefixer = require('gulp-autoprefixer');
+// --- THIS IS THE CORRECTED LINE ---
+// It now tells gulp-sass to use the modern 'sass' compiler.
+const sass = require('gulp-sass')(require('sass'));
 const cssnano = require('gulp-cssnano');
 const concat = require('gulp-concat');
 const clean = require('gulp-clean');
-// const imagemin = require('gulp-imagemin');
 const changed = require('gulp-changed');
 // for templates
 const map = require('vinyl-map');
 const path = require('path');
 const include = require('gulp-include');
-// const browsersync = require('browser-sync').create();
 
 // Clean assets
 
@@ -38,10 +37,8 @@ function defaultjs() {
     const source = ['./gulp/js/default.js']
 
     return src(source)
-        // .pipe(changed(source))
         .pipe(include())
         .pipe(concat('default.js'), {newLine: "\n\n"})
-        // .pipe(uglify())
         .pipe(rename({
             extname: '.min.js'
         }))
@@ -52,10 +49,8 @@ function adminjs() {
     const source = ['./gulp/js/admin.js']
 
     return src(source)
-        // .pipe(changed(source))
         .pipe(include())
         .pipe(concat('admin.js'), {newLine: "\n\n"})
-        // .pipe(uglify())
         .pipe(rename({
             extname: '.min.js'
         }))
@@ -68,8 +63,7 @@ function css() {
     const source = './gulp/scss/**/*.scss';
 
     return src(source)
-        // .pipe(changed(source))
-        .pipe(sass())
+        .pipe(sass().on('error', sass.logError)) // Added error logging for better debugging
         .pipe(rename({
             extname: '.min.css'
         }))
@@ -91,7 +85,6 @@ function templates() {
           return contents;
       }))
       .pipe(concat('templates.js'))
-      // .pipe(uglify())
       .pipe(dest('./public/assets/js/'))
 }
 
@@ -109,35 +102,5 @@ function cacheBust() {
       .pipe(dest("./public/"))
 }
 
-// Optimize images
-
-// function img() {
-//     return src('./src/img/*')
-//         .pipe(imagemin())
-//         .pipe(dest('./assets/img'));
-// }
-
-// Watch files
-
-// function watchFiles() {
-//     watch('./src/scss/*', css);
-//     watch('./src/js/*', js);
-//     watch('./src/img/*', img);
-// }
-
-// BrowserSync
-
-// function browserSync() {
-//     browsersync.init({
-//         server: {
-//             baseDir: './'
-//         },
-//         port: 3000
-//     });
-// }
-
 // Tasks to define the execution of the functions simultaneously or in series
-
-// exports.watch = parallel(watchFiles, browserSync);
 exports.default = series(clear, parallel(defaultjs, adminjs, css, templates, cacheBust));
-    

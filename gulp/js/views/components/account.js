@@ -35,22 +35,29 @@ app.views.Account = app.views.Base.extend({
 
   listenForAuth: function(){
     var _this = this;
-
-    // check auth sign in
+  
     PubSub.subscribe('auth.oAuthSignIn.success', function(ev, msg) {
+      window.LoginModal && window.LoginModal.hide();
+      window.AuthManager._justSignedIn = true;
       _this.onValidationSuccess($.auth.user);
-      $(window).trigger('alert', ['Successfully signed in as '+$.auth.user.name+'!  Refreshing page...', true]);
+      $(window).trigger('alert', [
+        'Successfully signed in as '+$.auth.user.name+'!  Refreshing page...',
+        true
+      ]);
     });
-
-    // check auth validation
+  
     PubSub.subscribe('auth.validation.success', function(ev, user) {
+      window.LoginModal && window.LoginModal.hide();
+      window.AuthManager._justSignedIn = true;
       _this.onValidationSuccess(user);
     });
-
-    // check sign out
+  
     PubSub.subscribe('auth.signOut.success', function(ev, msg) {
       _this.onSignOutSuccess();
-      $(window).trigger('alert', ['Successfully signed out! Refreshing page...', true]);
+      $(window).trigger('alert', [
+        'Successfully signed out! Refreshing page...',
+        true
+      ]);
     });
   },
 

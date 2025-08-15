@@ -121,7 +121,7 @@ class TranscriptsController < ApplicationController
   private
 
     def set_transcript
-      @transcript = Transcript.find_by(uid: params[:id])
+      @transcript = Transcript.find_by(uid: params[:id] || params[:uid])
     end
 
     def transcript_params
