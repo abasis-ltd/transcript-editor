@@ -49,3 +49,7 @@ project/fix_it_plus/data/*.csv
 /config/ci.yml
 
 list.txt
+# === Un-ignore transcript data ===
+!project/fixit-cy/transcripts/
+!project/fixit-cy/transcripts/**/*.json
+!project/fixit-cy/transcripts/**/*.vtt
